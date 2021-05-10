@@ -1,0 +1,45 @@
+describe('TestExplore', function()
+{
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false
+  })
+
+  it('ExplorePage', function() 
+  {
+    cy.visit('https://www.flickr.com/')
+
+    .get('.gn-signin > .gn-title').click()
+    .get('[data-testid=identity-email-input]').type("testing.swproject@gmail.com")
+    .get('[data-testid=identity-form-submit-button] > .user-select-none').click()
+    .get('[data-testid=identity-password-input]').type("testingsw2021")
+    .get('[data-testid=identity-form-submit-button] > .user-select-none').click()
+    .wait(2000)
+    .get('.mobile-nav-toggle').click()
+    .wait(1000)
+    .get(':nth-child(1) > .explore').click()
+    .wait(2000)
+    .get('.fluid-share-icon').click()
+    .wait(2000)
+    .get('.close-x').click()
+    .wait(2000)
+    .get('#tags > a').click()
+    .wait(4000)
+    .get('#events > a').click()
+    .wait(3000)
+    .get('div.more-link').click()
+    .wait(1000)
+    .get('.content > ul > :nth-child(3) > a').click()
+    .wait(5000)
+    .go(-1)
+    .wait(500)
+    .get('div.more-link').click()
+    .wait(500)
+    .get('.content > ul > :nth-child(2) > a')
+    .wait(5000)
+    .go(-1)
+    .wait(500)
+    .get('.main-logo > .icon').click()
+  })
+})
