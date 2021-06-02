@@ -20,7 +20,7 @@ git:
 notifications:
   email:
     recipients:
-      - $DEVOPS_EMAIL
+      - ziyad.ss@hotmai.com
     on_success: always
     on_failure: always
       #- $LEAD_EMAIL

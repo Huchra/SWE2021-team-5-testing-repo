@@ -14,10 +14,10 @@ COPY ./ ./
 
 #Builds project intoto local /app/build/
 RUN npm run build
-RUN yarn global add serve
+#RUN yarn global add serve
 #Nginx base image to serve the built project
-#FROM nginx
+FROM nginx
 
 #Copies nginx configuration file, then built project directory
-#COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-#COPY --from=builder /app/build/ /usr/share/nginx/html
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build/ /usr/share/nginx/html

@@ -1,7 +1,7 @@
 version: "3"
 services:
   front:
-    image: ziyadss/flickr-frontend-test
+    image: ziyadss/flickr-frontend
     build: ./frontend-Flickr/
     volumes:
       - /app/node_modules
@@ -12,7 +12,7 @@ services:
       - "3000:3000"
     command: ["npm", "run", "test"]
   back:
-    image: ziyadss/flickr-backend-test
+    image: ziyadss/flickr-backend
     build: ./flickr-backend/
     volumes:
       - ./flickr-backend:/app
