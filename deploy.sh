@@ -10,7 +10,7 @@ docker-compose push
 #python3 git-restore-mtime
 
 #Remove dockerfiles
-rm flickr-backend/Dockerfile*
+#rm flickr-backend/Dockerfile* frontend-Flickr/Dockerfile*
 
 ssh -o StrictHostKeyChecking=no ubuntu@$EC2_INSTANCE "sudo rm -r  fotone/flickr-backend/*/migrations"
 
@@ -18,7 +18,7 @@ ssh -o StrictHostKeyChecking=no ubuntu@$EC2_INSTANCE "sudo rm -r  fotone/flickr-
 #allowing static files to be changed without reloading containers
 #rsync -e "ssh -o StrictHostKeyChecking=no" -au flickr-backend upload/docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
 #ssh-keyscan -H $EC2_INSTANCE >> ~/.ssh/known_hosts
-scp -o StrictHostKeyChecking=no -r flickr-backend upload/docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
+scp -o StrictHostKeyChecking=no -r flickr-backend frontend-Flickr docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
 
 #From instance, pulls updated images and reloads the containers if they were changed.
 ssh ubuntu@$EC2_INSTANCE "cd fotone; sudo docker-compose pull; sudo docker-compose up --build -d"

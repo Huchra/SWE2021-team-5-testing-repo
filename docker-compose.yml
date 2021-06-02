@@ -1,12 +1,21 @@
 version: "3"
 services:
+  front:
+    image: ziyadss/flickr-frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend-Flickr:/app
+    environment:
+      - CI=true
+    ports:
+      - "3000:3000"
+    command: ["npm","start"]
   back:
     image: ziyadss/flickr-backend
-    build: ./flickr-backend
     volumes:
       - ./flickr-backend:/app
+    environment:
+      - CI=true
     ports:
       - "8000:8000"
-    command: sh -c "python manage.py makemigrations &&
-                    python manage.py migrate &&
-                    python manage.py runserver 0.0.0.0:8000"
+    command: ["python","manage.py","runserver","0.0.0.0:8000"]

@@ -13,11 +13,11 @@ RUN npm install --legacy-peer-deps
 COPY ./ ./
 
 #Builds project intoto local /app/build/
-RUN npm run build
+#RUN npm run build
 
 #Nginx base image to serve the built project
-FROM nginx
+#FROM nginx
 
 #Copies nginx configuration file, then built project directory
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/build/ /usr/share/nginx/html
+#COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+#COPY --from=builder /app/build/ /usr/share/nginx/html
