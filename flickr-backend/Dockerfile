@@ -13,5 +13,5 @@ RUN pip install -r requirements.txt
 #but kept for easy migration to different deployment
 COPY ./ ./
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+#RUN python manage.py makemigrations
+#RUN python manage.py migrate
