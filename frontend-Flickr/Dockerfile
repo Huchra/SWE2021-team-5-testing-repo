@@ -13,8 +13,8 @@ RUN npm install --legacy-peer-deps
 COPY ./ ./
 
 #Builds project intoto local /app/build/
-#RUN npm run build
-
+RUN npm run build
+RUN yarn global add serve
 #Nginx base image to serve the built project
 #FROM nginx
 

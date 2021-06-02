@@ -5,17 +5,18 @@ services:
     volumes:
       - /app/node_modules
       - ./frontend-Flickr:/app
-    environment:
-      - CI=true
     ports:
       - "3000:3000"
-    command: ["npm","start"]
+    command: ["serve","-s","build","-l","3000"]
   back:
     image: ziyadss/flickr-backend
     volumes:
       - ./flickr-backend:/app
-    environment:
-      - CI=true
     ports:
       - "8000:8000"
     command: ["python","manage.py","runserver","0.0.0.0:8000"]
+    
+    
+#sudo docker run -itp 8000:8000 ziyadss/flickr-backend python manage.py runserver 0.0.0.0:8000
+
+#sudo docker run -itp 3000:3000 ziyadss/flickr-frontend npm start

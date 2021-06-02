@@ -3,7 +3,7 @@
 
 
 #Push built docker images to hub
-docker-compose push
+docker-compose -f docker-compose.dev.yml push
 
 #Sets file modification times to last commit they were changed.
 #Done to minimize files sent using rsync.
