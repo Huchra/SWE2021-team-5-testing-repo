@@ -2,7 +2,9 @@ version: "3"
 services:
   front:
     image: ziyadss/flickr-frontend
-    build: ./frontend-Flickr/
+    build: 
+      context: ./frontend-Flickr/
+      dockerfile: Dockerfile.dev
     volumes:
       - /app/node_modules
       - ./frontend-Flickr:/app
@@ -20,4 +22,6 @@ services:
       - CI=true
     ports:
       - "8000:8000"
-    command: ["python","manage.py","test","--keepdb","accounts.test_views"]
+    command: sh -c "python manage.py makemigrations &&
+                    python manage.py migrate"
+#                    python manage.py runserver 0.0.0.0:8000"
