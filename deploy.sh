@@ -3,7 +3,8 @@
 
 
 #Push built docker images to hub
-docker-compose -f docker-compose.dev.yml push
+docker push ziyadss/flickr-frontend
+docker push ziyadss/flickr-backend
 
 #Sets file modification times to last commit they were changed.
 #Done to minimize files sent using rsync.
