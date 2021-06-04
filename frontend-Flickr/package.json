@@ -33,7 +33,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-	"dev": "concurrently --kill-others \"json-server --watch db.json --port 5000\" \"jest --watchAll\""
+	"dev": "concurrently --kill-others \"json-server --watch db.json --port 5000\" \"jest --watchAll\"",
     "doc": "jsdoc -c jsdoc.json",
     "lint": "eslint src",
     "server": "json-server --watch db.json --port 5000",
