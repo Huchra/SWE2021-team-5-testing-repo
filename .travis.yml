@@ -3,9 +3,7 @@
 #  - arm64
 #  - ppc64le
 #  - s390x
-branches:
-  only:
-  - backend
+
 #Travis environment setup
 language:       ruby
 os:             linux
@@ -22,20 +20,20 @@ git:
 notifications:
   email:
     recipients:
-      - $DEVOPS_EMAIL
+      - ziyad.ss@hotmai.com
     on_success: always
     on_failure: always
       #- $LEAD_EMAIL
 
 #Before building for production, build for testing
-#before_script:
-# - docker-compose -f docker-compose.dev.yml build
+before_script:
+ - docker-compose -f docker-compose.dev.yml build
 
 #Run tests from docker-compose.dev, if successfull login to Docker Hub and build for production
 script:
-  # - docker-compose -f docker-compose.dev.yml up
+  - docker-compose -f docker-compose.dev.yml up
   - echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker-compose build
+  - docker-compose -f docker-compose.prod.yml build
 
 #If tests and production build succeed, do ???
 #after_success:
@@ -48,4 +46,4 @@ deploy:
   provider:     script
   script:       bash deploy.sh $EC2_INSTANCE
   on:
-    branch:     backend
+    branch:     main

@@ -1,24 +1,27 @@
 version: "3"
 services:
   front:
-    image: ziyadss/flickr-frontend-test
-    build:
-      context: ./flickr-frontend/
+    image: ziyadss/flickr-frontend
+    build: 
+      context: ./frontend-Flickr/
       dockerfile: Dockerfile.dev
     volumes:
       - /app/node_modules
-      - ./flickr-frontend:/app
+      - ./frontend-Flickr:/app
     environment:
       - CI=true
+    ports:
+      - "3000:3000"
     command: ["npm", "run", "test"]
-
   back:
-    image: ziyadss/flickr-backend-test
-    build:
-      context: ./flickr-backend/
-      dockerfile: Dockerfile.dev
+    image: ziyadss/flickr-backend
+    build: ./flickr-backend/
     volumes:
       - ./flickr-backend:/app
     environment:
       - CI=true
-    command: ["python", "manage.py", "test"]
+    ports:
+      - "8000:8000"
+    command: sh -c "python manage.py makemigrations &&
+                    python manage.py migrate &&
+                    python manage.py test"

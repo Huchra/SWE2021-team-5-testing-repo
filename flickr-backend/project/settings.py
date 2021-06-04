@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     'www.fotone.me',
     'fotone.me',
     '127.0.0.1',
+    'localhost'
 ]
 AUTH_USER_MODEL = 'accounts.Account'
 REST_FRAMEWORK = {

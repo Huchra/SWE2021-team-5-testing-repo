@@ -2,6 +2,7 @@ version: "3"
 services:
   front:
     image: ziyadss/flickr-frontend
+    build: ./frontend-Flickr/
     ports:
       - "3000:3000"
   back:
