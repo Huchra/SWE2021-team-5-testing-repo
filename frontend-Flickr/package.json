@@ -31,9 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-	"pretest": "json-server --watch db.json --port 5000 &",
     "test": "react-scripts test",
-	"posttest": "pkill -f json-server",
     "eject": "react-scripts eject",
     "doc": "jsdoc -c jsdoc.json",
     "lint": "eslint src",
