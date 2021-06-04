@@ -9,7 +9,7 @@ services:
       - CI=true
     ports:
       - "3000:3000"
-    command: ["npm", "run", "test"]
+    command: ["npm", "run", "dev"]
   back:
     image: ziyadss/flickr-backend
     build: ./flickr-backend/
