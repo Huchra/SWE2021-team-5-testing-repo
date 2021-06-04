@@ -5,7 +5,6 @@ FROM python
 WORKDIR '/app'
 
 #Installs project dependencies
-#RUN apk add zlib-dev jpeg-dev gcc musl-dev
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
@@ -13,9 +12,7 @@ RUN pip install -r requirements.txt
 #but kept for easy migration to different deployment
 COPY ./ ./
 
-#RUN python manage.py makemigrations
-#RUN python manage.py migrate
-
+#Commands to run the server
 CMD sh -c "python manage.py makemigrations && \
                     python manage.py migrate && \
                     python manage.py runserver 0.0.0.0:8000"

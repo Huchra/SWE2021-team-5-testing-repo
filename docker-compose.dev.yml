@@ -5,9 +5,6 @@ services:
     build: 
       context: ./frontend-Flickr/
       dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./frontend-Flickr:/app
     environment:
       - CI=true
     ports:
@@ -16,12 +13,12 @@ services:
   back:
     image: ziyadss/flickr-backend
     build: ./flickr-backend/
-    volumes:
-      - ./flickr-backend:/app
     environment:
       - CI=true
     ports:
       - "8000:8000"
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
-                    python manage.py test"
+                    python manage.py test --keepdb gallery.tests"
+                    
+#This is the unit testing environment

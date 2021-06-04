@@ -10,3 +10,5 @@ services:
       - ./flickr-backend:/app
     ports:
       - "8000:8000"
+
+#This is the production running environment

@@ -7,7 +7,7 @@ services:
       - "3000:3000"
   back:
     image: ziyadss/flickr-backend
-    volumes:
-      - ./flickr-backend:/app
     ports:
       - "8000:8000"
+
+#This is the production building environment

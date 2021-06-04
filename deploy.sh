@@ -1,25 +1,14 @@
 #This shell script takes an input $EC2_INSTANCE
 #This is the address to ssh into for deployment.
 
-
-#Push built docker images to hub
-docker push ziyadss/flickr-frontend
-docker push ziyadss/flickr-backend
-
-#Sets file modification times to last commit they were changed.
-#Done to minimize files sent using rsync.
-#python3 git-restore-mtime
-
-#Remove dockerfiles
-#rm flickr-backend/Dockerfile* frontend-Flickr/Dockerfile*
+#Removes empty .env file
 rm flickr-backend/project/.env
 
+#Removes old migration files from server
 ssh -o StrictHostKeyChecking=no ubuntu@$EC2_INSTANCE "sudo rm -r  fotone/flickr-backend/*/migrations"
 
 #Sending of project files to be used as volumes,
-#allowing static files to be changed without reloading containers
-#rsync -e "ssh -o StrictHostKeyChecking=no" -au flickr-backend upload/docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
-#ssh-keyscan -H $EC2_INSTANCE >> ~/.ssh/known_hosts
+#allowing static files to be changed without reloading containers (for backend, as it's running a development server instead of a production build.)
 scp -o StrictHostKeyChecking=no -r flickr-backend docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
 
 #From instance, pulls updated images and reloads the containers if they were changed.

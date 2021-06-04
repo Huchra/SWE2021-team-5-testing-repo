@@ -21,12 +21,14 @@ notifications:
   email:
     recipients:
       - ziyad.ss@hotmai.com
+      - khalidzohair12@gmail.com
     on_success: always
     on_failure: always
-      #- $LEAD_EMAIL
 
 #Before building for production, build for testing
-before_script:
+#This builds base images (installing the dependencies inside them)
+#These base images will be used later to further build for production
+install:
  - docker-compose -f docker-compose.dev.yml build
 
 #Run tests from docker-compose.dev, if successfull login to Docker Hub and build for production
@@ -35,8 +37,10 @@ script:
   - echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
 
-#If tests and production build succeed, do ???
-#after_success:
+#If tests and production build succeed, push the built images
+after_success:
+  - docker push ziyadss/flickr-frontend
+  - docker push ziyadss/flickr-backend
 
 #If tests and production build fail, do ???
 #after_failure:
