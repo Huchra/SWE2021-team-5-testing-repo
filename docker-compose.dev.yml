@@ -9,7 +9,8 @@ services:
       - CI=true
     ports:
       - "3000:3000"
-    command: ["npm", "run", "test"]
+#    command: ["npm", "run", "test"]
+    command: sh -c "npm run server &; npm run test"
   back:
     image: ziyadss/flickr-backend
     build: ./flickr-backend/
