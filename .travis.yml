@@ -29,18 +29,18 @@ notifications:
 #This builds base images (installing the dependencies inside them)
 #These base images will be used later to further build for production
 install:
-# - docker-compose -f docker-compose.dev.yml build
+ - docker-compose -f docker-compose.dev.yml build
 
 #Run tests from docker-compose.dev, if successfull login to Docker Hub and build for production
 script:
-#  - docker-compose -f docker-compose.dev.yml up
+  - docker-compose -f docker-compose.dev.yml up
   - echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
 
 #If tests and production build succeed, push the built images
 after_success:
   - docker push ziyadss/flickr-frontend
-#  - docker push ziyadss/flickr-backend
+  - docker push ziyadss/flickr-backend
 
 #If tests and production build fail, do ???
 #after_failure:

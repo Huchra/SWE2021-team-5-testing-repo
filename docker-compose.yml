@@ -14,5 +14,5 @@ services:
 #This is the production running environment
 
 
-#sudo docker run --network="host" -p 3000:3000 ziyadss/flickr-frontend -d
-#sudo docker run --network="host" -p 8000:8000 -v $(pwd)/flickr-backend:/app ziyadss/flickr-backend -d
+#sudo docker run -d --network="host" -p 3000:3000 ziyadss/flickr-frontend
+#sudo docker run -d --network="host" -p 8000:8000 -v $(pwd)/flickr-backend:/app ziyadss/flickr-backend
