@@ -12,5 +12,4 @@ ssh -o StrictHostKeyChecking=no ubuntu@$EC2_INSTANCE "sudo rm -r  fotone/flickr-
 scp -o StrictHostKeyChecking=no -r flickr-backend docker-compose.yml ubuntu@$EC2_INSTANCE:fotone
 
 #From instance, pulls updated images and reloads the containers if they were changed.
-ssh ubuntu@$EC2_INSTANCE "cd fotone; sudo docker-compose pull"
-#; sudo docker-compose up --build -d"
+ssh -o StrictHostKeyChecking=no ubuntu@$EC2_INSTANCE "cd fotone; sudo docker-compose pull; sudo docker-compose up --build -d"
