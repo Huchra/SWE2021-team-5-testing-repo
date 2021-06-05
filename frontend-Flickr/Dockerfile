@@ -8,10 +8,11 @@ WORKDIR '/app'
 COPY ./package.json ./
 RUN npm install --legacy-peer-deps
 
-#Copies project files
+#Copies project files - unnecessary due to volume
+#but kept for easy migration to different deployment
 COPY ./ ./
 
-#Builds project into /app/build/
+#Builds project intoto local /app/build/
 RUN npm run build
 
 #Nginx base image to serve the built project
