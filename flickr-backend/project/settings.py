@@ -130,7 +130,7 @@ DATABASES = {
         'CLIENT': {
                     'host': "mongodb+srv://Fotone:@cluster0.khmwk.mongodb.net/flickr_database?retryWrites=true&w=majority",
                     'username': 'Fotone',
-                    'password': '123456789'
+                    'password': '1234567890'
                     },
     }
 }
