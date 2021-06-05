@@ -12,3 +12,10 @@ services:
       - "8000:8000"
 
 #This is the production running environment
+
+
+#docker run --network="host" -p 3000:3000 ziyadss/flickr-frontend -d
+#docker run --network="host" -p 8000:8000 -v /flickr-backend:/app ziyadss/flickr-backend -d
+
+#git commit -m "updated front and back, testing new integration method"
+
