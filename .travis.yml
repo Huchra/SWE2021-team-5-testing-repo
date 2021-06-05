@@ -1,3 +1,8 @@
+branches:
+  only:
+    - main
+
+
 #Uncomment for OSS deployment - when repo is public
 #arch:
 #  - arm64
