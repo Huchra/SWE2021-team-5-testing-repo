@@ -1,7 +1,6 @@
 from .models import *
 from .serializers import *
 from .views_function import *
-from accounts.views import *
 from photo.serializers import *
 from photo.models import Photo
 from accounts.models import Account
@@ -38,6 +37,7 @@ def group_info(request, id):
 
     serializer = GroupSerializer(group_obj)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 # join or leave group APIs
 @api_view(['POST', 'DELETE'])
@@ -158,7 +158,6 @@ def member_list(request, id):
 
 
 # By group admin only
-# @swagger_auto_schema( methods = ['PUT'] , request_body = EditGroupMemberSerializer )
 @api_view(['PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def member_manage(request, group_id, member_id):
@@ -179,13 +178,13 @@ def member_manage(request, group_id, member_id):
 
     # Promote member to be admin by admin only
     if request.method == 'PUT':
-        # serializer = GroupMemberSerializer(data=request.data)
-        # if serializer.is_valid():
-        Members.objects.filter(group=group_obj,
-                                member=member_obj).update(
-                                    member_type=request.data['member_type'])
-        return Response( status=status.HTTP_200_OK)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = GroupMemberSerializer(data=request.data)
+        if serializer.is_valid():
+            Members.objects.filter(group=group_obj,
+                                   member=member_obj).update(
+                                       member_type=request.data['member_type'])
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Delete member by admin
     if request.method == 'DELETE':
@@ -204,8 +203,6 @@ def member_manage(request, group_id, member_id):
 
 
 # edit group rules by group admin only
-@swagger_auto_schema( methods = ['PUT'] , request_body = GroupRulesSerializer )
-
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_group_rules(request, group_id):
@@ -224,7 +221,6 @@ def edit_group_rules(request, group_id):
 
 
 # edit group name and discription by group admin only
-@swagger_auto_schema( methods = ['PUT'] , request_body = GroupNameSerializer )
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_group_name(request, group_id):
@@ -244,7 +240,6 @@ def edit_group_name(request, group_id):
 
 
 # edit group roles by group admin only
-@swagger_auto_schema( methods = ['PUT'] , request_body = GroupRoleSerializer )
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_group_roles(request, group_id):
@@ -264,7 +259,6 @@ def edit_group_roles(request, group_id):
 
 
 # edit group privacy by group admin only
-@swagger_auto_schema( methods = ['PUT'] , request_body = GroupPrivacySerializer )
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_group_privacy(request, group_id):
@@ -288,7 +282,7 @@ def edit_group_privacy(request, group_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@swagger_auto_schema( methods = ['PUT'] , request_body = GroupSafetyLevelSerializer )
+
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_group_18plus(request, group_id):
@@ -305,8 +299,6 @@ def edit_group_18plus(request, group_id):
 
 
 # create group or get groups user is a member of
-@swagger_auto_schema( methods = ['post'] , request_body = CreateGroupSerializer )
-
 @api_view(['POST', 'GET'])
 @permission_classes((IsAuthenticated,))
 def group_get_create(request):
@@ -330,7 +322,6 @@ def group_get_create(request):
             # create new group
             group_obj = group.objects.create(
                 name=request.data["name"],
-                description=request.data['description'],
                 privacy=request.data['privacy'],
                 eighteenplus=request.data['eighteenplus'])
 
@@ -373,12 +364,8 @@ def top_contributers(request, group_id):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# search for a group by its name ordered from the oldest
+# search for a group by its title ordered from the oldest
 # all flickr groups + groups you're a member of
-test_param = openapi.Parameter('name', openapi.IN_QUERY, description="Search for a group with name", type=openapi.TYPE_STRING)
-user_response = openapi.Response('response description', GroupSerializer)
-
-@swagger_auto_schema(method='get', manual_parameters=[test_param], responses={200: user_response})
 @api_view(['GET'])
 def find_groups(request):
 
@@ -386,8 +373,8 @@ def find_groups(request):
     paginator.page_size = 10
 
     value = request.query_params.get("name")
-    # public_groups = group.objects.all().filter(Q(privacy=3) | Q(privacy=2))
-    group_list = group.objects.all().filter(Q(privacy=3) | Q(privacy=2) ,name__icontains=value)\
+    public_groups = group.objects.all().filter(Q(privacy=3) | Q(privacy=2))
+    group_list = public_groups.filter(name__icontains=value)\
         .order_by('-date_create')
     # group_list = group.objects.filter(name__icontains=value)\
     #     .order_by('-date_create')
@@ -401,7 +388,7 @@ def find_groups(request):
         user = request.user
         group_member_list = user.group_member.all(
             ).filter(name__icontains=value)\
-            .order_by('-date_create')
+            .order_by('-date_create')[:3]
         result_page1 = paginator.paginate_queryset(group_member_list, request)
         joined_group = GroupSerializer(result_page1, many=True).data
 
@@ -429,14 +416,14 @@ def group_join_request(request, id):
 
     # Join group request
     elif request.method == 'POST':
-        # serializer = GroupPendingMemberSerializer(data=request.data)
-        # if serializer.is_valid():
-        PendingMembers.objects.create(group=group_obj,
-                                        pending_member=request.user,
-                                        message=request.data['message'])
-        group_obj_increment(group_obj, 'pending_members_count')
-        return Response( status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = GroupPendingMemberSerializer(data=request.data)
+        if serializer.is_valid():
+            PendingMembers.objects.create(group=group_obj,
+                                          pending_member=request.user,
+                                          message=request.data['message'])
+            group_obj_increment(group_obj, 'pending_members_count')
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Delete join group request
     elif request.method == 'DELETE':
@@ -513,7 +500,6 @@ def group_join_request_respond(request, group_id, pending_id):
 
 # Topic
 # create topic
-@swagger_auto_schema( methods = ['post'] , request_body = CreateTopicSerializer )
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def create_topic(request, group_id):
@@ -570,7 +556,6 @@ def topic_info(request, group_id, topic_id):
 
 
 # edit or delete topic
-@swagger_auto_schema( methods = ['put'] , request_body = TopicSubjectSerializer )
 @api_view(['PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
 def edit_delete_topic(request, group_id, topic_id):
@@ -617,7 +602,6 @@ def edit_delete_topic(request, group_id, topic_id):
 
 
 # edit topic message
-@swagger_auto_schema( methods = ['put'] , request_body = TopicMessageSerializer )
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def edit_topic_message(request, group_id, topic_id):
@@ -648,7 +632,6 @@ def edit_topic_message(request, group_id, topic_id):
 
 # replies
 # create new reply
-@swagger_auto_schema( methods = ['post'] , request_body = CreateReplySerializer )
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def create_reply(request, group_id, topic_id):
@@ -734,10 +717,7 @@ def reply_info(request, group_id, topic_id, reply_id):
     serializer = ReplySerializer(group_topic_reply)
     return Response(serializer.data)
 
-test_param = openapi.Parameter('message', openapi.IN_QUERY, description="Search for a topic with message", type=openapi.TYPE_STRING)
-user_response = openapi.Response('response description', TopicSerializer)
 
-@swagger_auto_schema(method='get', manual_parameters=[test_param], responses={200: user_response})
 @api_view(['GET'])
 def find_topic(request, group_id):
     # search for a topic by its message ordered from the oldest
@@ -757,10 +737,7 @@ def find_topic(request, group_id):
     serializer = TopicSerializer(topics, many=True)
     return Response(serializer.data)
 
-test_param = openapi.Parameter('title', openapi.IN_QUERY, description="Search for a pool with title", type=openapi.TYPE_STRING)
-user_response = openapi.Response('response description', PhotoSerializer)
 
-@swagger_auto_schema(method='get', manual_parameters=[test_param], responses={200: user_response})
 @api_view(['GET'])
 def find_pools(request, group_id):
     # search for photo by its title ordered from the oldest
@@ -776,10 +753,10 @@ def find_pools(request, group_id):
     except ObjectDoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = PhotoSerializer(photos, many=True)
+    serializer = PhotoMetaSerializer(photos, many=True)
     return Response(serializer.data)
 
-@swagger_auto_schema( methods = ['put'] , request_body = CreateReplySerializer )
+
 # edit or delete reply
 @api_view(['PUT', 'DELETE'])
 @permission_classes((IsAuthenticated,))
