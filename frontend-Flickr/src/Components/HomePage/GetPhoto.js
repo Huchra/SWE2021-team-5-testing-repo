@@ -27,10 +27,10 @@ const GetPhoto = () => {
           setphotoData(photoFromServer);
         });
     };
-    // getPhoto();
+    getPhoto();
 
     const getHomePhoto = async () => {
-      await axios
+      axios
         .get(`${Conf.backURL}photos/home`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,

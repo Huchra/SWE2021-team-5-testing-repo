@@ -10,9 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Share from './Share';
 import ViewPhotoServices from '../ViewPhotoServices';
 
-const accessToken = localStorage.getItem('access token');
-
-const UpperView = ({ photoInfo }) => {
+const UpperView = () => {
+  // const { handleFave } = ViewPhotoServices();
   const viewPhotoIcons = {
     color: 'white',
     height: '20',
@@ -20,24 +19,15 @@ const UpperView = ({ photoInfo }) => {
     margin: '7',
   };
   const [show, setShow] = useState(false);
-  const faved = photoInfo.is_faved;
+  const [faved, setFaved] = useState(true);
+
   // const imgDown = 'pexels-eberhard-grossgasteiger-691668.jpg';
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [PhotoProps, setPhotoProps] = useState({
-    id: localStorage.getItem('ImgID'),
-    Token: accessToken,
-  });
-  const handleAddFaved = async () => {
-    await ViewPhotoServices.addFav(PhotoProps);
-  };
-  const handleRemoveFaved = async () => {
-    await ViewPhotoServices.removeFav(PhotoProps);
-  };
-
   // const viewPhotoData = ViewPhotoServices();
-  const imgUrl = `https://fotone.me${photoInfo.media_file}`;
-  // const imgUrl = 'https://mdbcdn.b-cdn.net/img/new/standard/nature/111.jpg';
+  // const imgUrl = `https://fotone.me${viewPhotoData.media_file}`;
+  const imgUrl = 'https://mdbcdn.b-cdn.net/img/new/standard/nature/111.jpg';
+  // console.log(imgUrl);
   /**
    * fetch download to download an image
    * @param {event} e
@@ -86,8 +76,8 @@ const UpperView = ({ photoInfo }) => {
       </div>
       <div className="photoEngView">
         {faved
-          ? <AiFillStar onClick={handleRemoveFaved} style={viewPhotoIcons} />
-          : <AiOutlineStar onClick={handleAddFaved} style={viewPhotoIcons} />}
+          ? <AiFillStar style={viewPhotoIcons} />
+          : <AiOutlineStar style={viewPhotoIcons} />}
 
         <AiOutlinePlusSquare style={viewPhotoIcons} />
         <TiArrowForwardOutline onClick={handleShow} style={viewPhotoIcons} />
