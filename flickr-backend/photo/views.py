@@ -855,17 +855,28 @@ def get_recent_photos(request):
 
     Paginator = PageNumberPagination()
     # Maximum number of objects per page, changed as needed
-    Paginator.page_size = 20
+    Paginator.page_size = 50
+    if request.user.is_anonymous:
+        photos = Photo.objects.filter(is_public=True).order_by('-date_posted')
+        # Maximum number of objects returned in the request, changed as needed
+        required_photos = limit_photos_number(photos, 1000)
 
-    photos = Photo.objects.filter(is_public=True).order_by('-date_posted')
-    # Maximum number of objects returned in the request, changed as needed
-    required_photos = limit_photos_number(photos, 1000)
+        results = Paginator.paginate_queryset(required_photos, request)
 
-    results = Paginator.paginate_queryset(required_photos, request)
+        recent_photos = PhotoSerializer(results, many=True).data
+        return Paginator.get_paginated_response({'stat': 'ok',
+                                                'photos': recent_photos})
+    else:
+        user=request.user
+        photos = Photo.objects.filter(is_public=True).exclude(owner=user).order_by('-date_posted')
+        # Maximum number of objects returned in the request, changed as needed
+        required_photos = limit_photos_number(photos, 1000)
 
-    recent_photos = PhotoSerializer(results, many=True).data
-    return Paginator.get_paginated_response({'stat': 'ok',
-                                             'photos': recent_photos})
+        results = Paginator.paginate_queryset(required_photos, request)
+
+        recent_photos = PhotoSerializer(results, many=True).data
+        return Paginator.get_paginated_response({'stat': 'ok',
+                                                'photos': recent_photos})                                           
 
 # Photo search API
 
