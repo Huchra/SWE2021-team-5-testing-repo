@@ -28,12 +28,16 @@ notifications:
 #This builds base images (installing the dependencies inside them)
 #These base images will be used later to further build for production
 install:
- - docker-compose -f docker-compose.dev.yml build
+  - docker build -t ziyadss/flickr-frontend-test -f frontend-Flickr/Dockerfile.dev frontend-Flickr
+  - docker build -t ziyadss/flickr-backend-test -f flickr-backend/Dockerfile.dev flickr-backend
 
-#Run tests from docker-compose.dev, if successfull build for production
+#Run tests on the base images, if successfull build further on them for production
 script:
-  - docker-compose -f docker-compose.dev.yml up
-  - docker-compose -f docker-compose.prod.yml build
+  - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
+  - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
+
+  - docker build -t ziyadss/flickr-frontend frontend-Flickr
+  - docker build -t ziyadss/flickr-backend flickr-backend
 
 #If tests and production build succeed, deploy using deploy.sh
 deploy:

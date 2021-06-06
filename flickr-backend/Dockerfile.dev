@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 #but kept for easy migration to different deployment
 COPY ./ ./
 
-#Commands to run the server
+#Commands to run tests
 CMD sh -c "python manage.py makemigrations && \
                     python manage.py migrate && \
-                    python manage.py runserver 0.0.0.0:8000"
+                    python manage.py test --keepdb gallery.tests"

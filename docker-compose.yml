@@ -4,15 +4,13 @@ services:
     image: ziyadss/flickr-frontend
     ports:
       - "3000:3000"
+    depends_on: back
   back:
     image: ziyadss/flickr-backend
     volumes:
       - ./flickr-backend:/app
     ports:
       - "8000:8000"
+    restart: on-failure
 
 #This is the production running environment
-
-
-#sudo docker run -d --network="host" -p 3000:3000 ziyadss/flickr-frontend
-#sudo docker run -d --network="host" -p 8000:8000 -v $(pwd)/flickr-backend:/app ziyadss/flickr-backend
