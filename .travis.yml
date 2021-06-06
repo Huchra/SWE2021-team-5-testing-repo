@@ -10,18 +10,13 @@ os:             linux
 dist:           focal
 services:       docker
 
-#Get entire repo history when cloning
-#To get commits info, for use in git-restore-mtime in deploy.sh
-git:
-  depth:        false
-
-#Emails to notify about build result
-#Default unchanged, sends on success if previous build failed, and on every fail
+#Emails repo owner to notify about build result
+#Sends on success if previous build failed, and on every fail
 notifications:
   email:
     recipients:
       - khalidzohair12@gmail.com
-    on_success: always
+    on_success: change
     on_failure: always
 
 #Before building for production, build for testing
@@ -31,7 +26,7 @@ install:
   - docker build -t ziyadss/flickr-frontend-test -f frontend-Flickr/Dockerfile.dev frontend-Flickr
   - docker build -t ziyadss/flickr-backend-test -f flickr-backend/Dockerfile.dev flickr-backend
 
-#Run tests on the base images, if successfull build further on them for production
+#Run tests on the base images, then builds further on them for production
 script:
   - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
   - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
