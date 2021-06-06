@@ -16,6 +16,7 @@ notifications:
   email:
     recipients:
       - khalidzohair12@gmail.com
+      - ziyad.ss@hotmail.com
     on_success: change
     on_failure: always
 
@@ -28,7 +29,7 @@ install:
 
 #Run tests on the base images, then builds further on them for production
 script:
-  - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
+#  - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
   - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
 
   - docker build -t ziyadss/flickr-frontend frontend-Flickr

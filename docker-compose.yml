@@ -4,7 +4,8 @@ services:
     image: ziyadss/flickr-frontend
     ports:
       - "3000:3000"
-    depends_on: back
+    depends_on: 
+      - back
   back:
     image: ziyadss/flickr-backend
     volumes:
