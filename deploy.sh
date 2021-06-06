@@ -1,5 +1,10 @@
-#This shell script takes an input $EC2_INSTANCE
-#This is the address to ssh into for deployment.
+#This shell script takes inputs $DOCKER_ACCESS_KEY, $DOCKER_ID, and $EC2_INSTANCE.
+#These are DockerHub credentials, and an address to ssh into for deployment.
+
+#Log in to DockerHub, then push the images built for production.
+echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
+docker push ziyadss/flickr-frontend
+docker push ziyadss/flickr-backend
 
 #Removes empty .env file
 rm flickr-backend/project/.env
