@@ -1,4 +1,4 @@
-#Uses python image as a base, to use python & pip
+1#Uses python image as a base, to use python & pip
 FROM python
 
 #Sets work directory
@@ -15,4 +15,4 @@ COPY ./ ./
 #Commands to run tests
 CMD sh -c "python manage.py makemigrations && \
                     python manage.py migrate && \
-                    python manage.py test --keepdb gallery.tests"
+                    python manage.py test --keepdb"

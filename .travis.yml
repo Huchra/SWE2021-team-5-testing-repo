@@ -16,6 +16,7 @@ notifications:
   email:
     recipients:
       - khalidzohair12@gmail.com
+      - ziyad.ss@hotmail.com
     on_success: change
     on_failure: always
 
