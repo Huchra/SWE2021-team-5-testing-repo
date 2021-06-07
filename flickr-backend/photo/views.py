@@ -1131,18 +1131,20 @@ def fav_photo(request, id):
                 turn_on = True
                 show = True
                 # # push notification
-                header = {"Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
+                device = PlayerIds.objects.filter(user=request.user)
+                for i in device:
+                    header = {"Content-Type": "application/json; charset=utf-8",
+                    "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
 
-                payload = {"app_id": str(settings.API_KEY),
-                            "include_player_ids": [str(settings.PLAYER_ID)],
-                        "contents": {"en": str(request.user.first_name +" "+ request.user.last_name + " faved your photo")}}
-                        # "big_picture": str("https://" + photo_obj.media_file)}
-                        
-                        # "big_picture": "https://cdn.vox-cdn.com/thumbor/-cVT6oDpSP7kfe-0vdEKIdWlIuQ=/1400x1050/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/13370313/flickr.png"}
+                    payload = {"app_id": str(settings.API_KEY),
+                                "include_player_ids": [str(i.player_id)],
+                            "contents": {"en": str(request.user.first_name +" "+ request.user.last_name + " faved your photo")}}
+                            # "big_picture": str("https://" + photo_obj.media_file)}
+                            
+                            # "big_picture": "https://cdn.vox-cdn.com/thumbor/-cVT6oDpSP7kfe-0vdEKIdWlIuQ=/1400x1050/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/13370313/flickr.png"}
 
-                req = requests.post("https://app.onesignal.com/api/v1/notifications",
-                                    headers=header, data=json.dumps(payload))
+                    req = requests.post("https://app.onesignal.com/api/v1/notifications",
+                                        headers=header, data=json.dumps(payload))
             else:
                 turn_on = False
                 show = False

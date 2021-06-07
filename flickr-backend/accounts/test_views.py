@@ -2,7 +2,7 @@
 # from ..models import Account
 from accounts.views import *
 from django.test import TestCase
-from accounts.models import Account
+from accounts.models import *
 from accounts.serializers import *
 from project.utils import validate_password
 
@@ -800,30 +800,6 @@ class TestContacts(TestCase):
         self.assertEqual(response, 400)
         self.assertEqual(user.following_count,0)
         self.assertEqual(user.followers_count,0)
-
-    def test_unfollow_success(self):
-        user=create_test_user('user22@gmail.com')
-        #second user
-        followed_user= create_test_user('second22@gmail.com')
-        
-        Contacts.objects.create(
-            user=user, followed=followed_user)
-        contact2 = Contacts.objects.filter(
-            user=user, followed=followed_user)    
-        response= unfollow(contact2,user,followed_user)
-        contact = Contacts.objects.filter(
-            user=user, followed=followed_user)
-        self.assertEqual(contact.exists(), False)            
-        self.assertEqual(response, 204)
-        self.assertEqual(user.following_count,0)
-        self.assertEqual(followed_user.followers_count,0)
-
-    def test_unfollow_failure(self):
-        user=create_test_user('user45@gmail.com')
-        contact = Contacts.objects.filter(
-            user=user, followed=user)
-        response= unfollow(contact,user,user)   
-        self.assertEqual(response, 400)
 
         
 
