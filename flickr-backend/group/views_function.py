@@ -4,6 +4,15 @@ from django.db.models import Count
 
 
 def group_obj_increment(group_obj, field_increment):
+    """
+    Increment group items
+    
+    :param name: obj : group 
+    :param type: group object
+    :param name: field increment
+    :param type: string
+    :return: None
+    """
     if field_increment == 'member_count':
         group_obj.member_count += 1
     elif field_increment == 'pending_members_count':
@@ -12,6 +21,15 @@ def group_obj_increment(group_obj, field_increment):
 
 
 def group_obj_decrement(group_obj, field_decrement):
+    """
+    Decrement group items
+    
+    :param name: obj : group 
+    :param type: group object
+    :param name: field decrement
+    :param type: string
+    :return: None
+    """
     if field_decrement == 'member_count':
         group_obj.member_count -= 1
     elif field_decrement == 'pending_members_count':
@@ -20,7 +38,17 @@ def group_obj_decrement(group_obj, field_decrement):
 
 
 def group_privacy_invitation(request, group_obj, serializer, condition):
-
+    """
+    Check group privacy and set group invitation only
+    
+    :param name: obj : group 
+    :param type: group object
+    :param name: serializer
+    :param type: object
+    :param name: condition
+    :param type: int
+    :return: int
+    """
     if condition == 1:
         if group_obj.privacy == 1 and (serializer.validated_data['privacy'] == 2 or serializer.validated_data['privacy'] == 3):
             return 2
@@ -42,7 +70,16 @@ def group_privacy_invitation(request, group_obj, serializer, condition):
 
 
 def member_exists(request, group_obj):
+    """
+    Check if a member exist
 
+    :param name: obj : group 
+    :param type: group object
+    :param name: obj : request.user 
+    :param type: user object
+    :return name: bool : Does member exist?
+    :return type: bool
+    """
     members = Members.objects.filter(group=group_obj,
                                      member=request.user).count()
     if members > 0:
@@ -53,7 +90,16 @@ def member_exists(request, group_obj):
 
 
 def limit_groups_number(groups, max_limit):
+    """
+    limit groups number
 
+    :param name: groups 
+    :param type: group object
+    :param name: max limit
+    :param type: int
+    :return name: groups
+    :return type: group object
+    """
     required_groups_ids_list = []
     count = 1
     for group1 in groups:

@@ -2,7 +2,7 @@ import json
 
 from django.urls import reverse
 from rest_framework.reverse import reverse as api_reverse
-from django.test import TestCase, Client
+from django.test import TestCase, Client, TransactionTestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 from accounts.models import *
@@ -33,7 +33,9 @@ def create_test_user(email, first_name, last_name, password, age):
 
 
 # PhotoPermSerializer Tests
-class TestPhotoPermSerializer(TestCase):
+class TestsThatDependsOnPrimaryKeySequences(TransactionTestCase):
+    reset_sequences = True
+
 
     def test_change_perms_normal_case(self):
 

@@ -28,11 +28,35 @@ class RespondPagination(PageNumberPagination):
     max_page_size = 1
 
 def set_primary(serializer, photo_id, get_photo,sets_obj):
+    """
+    Set primary photo of a given photoset
+    
+    :param name: serializer
+    :param type: object
+    :param name: photo_id : Photo to set photoset with
+    :param type: int
+    :param name: get_photo 
+    :param type: gallery object
+    :param name: sets : sets to add the photo to
+    :param type: sets object
+    :param name: phopk : photo's primary key 
+    :param type: int
+    :return: None
+    """
     serializer.save(primary=photo_id)         # to set the primary photo of a given photoset
     get_photo.sets_photos.add(sets_obj)
 
 def photos (photo_id):   # to get a photo from the database
     
+    """
+    Get a photo from the database
+
+    :param name: photo_id 
+    :param type: int
+    :return name: get_photo 
+    :return type: photo object
+    :return name: bool
+    """
     bool = True #to check the existance of a given set
     try:
         get_photo = Photo.objects.get(id=photo_id)
@@ -46,12 +70,42 @@ def photos (photo_id):   # to get a photo from the database
         return get_photo, response, bool
         
 def add_photo(get_photo,get_list):
+    """
+    Add a photo to the photosets
+    
+    :param name: get_photo 
+    :param type: object
+    :param name: get_list 
+    :param type: object
+    :returns: None
+    """
     get_photo.sets_photos.add(get_list)
 
 def delete_photo(get_list, deleted_photo):
+    """
+    delete a photo to the photosets
+    
+    :param type: object
+    :param name: deleted_photo 
+    :param name: get_list 
+    :param type: object
+    :returns: None
+    """
     get_list.photos.remove(deleted_photo)
 
 def search_set(value):
+    """
+    search set by photo title
+    
+    :param name: value 
+    :param type: int 
+    :param name: get_list 
+    :param type: object
+    :return name: bool 
+    :return type: object
+    :return name: get_list 
+    :return type: object
+    """
     response=''
     bool= False
     set = sets.objects.filter(title__icontains=value)\
@@ -64,6 +118,16 @@ def search_set(value):
         
     
 def check_set(id):
+    """
+    check existing of a specific set
+    
+    :param name: get_list 
+    :param type: object
+    :param name: bool 
+    :param type: object
+    :param name: get_list 
+    :param type: object
+    """
     bool = True #to check the existance of a given set
     try:
         get_list = sets.objects.get(id=id)
@@ -77,6 +141,20 @@ def check_set(id):
         return get_list, response, bool
 
 def check_comm(get_list, comment_id):
+    """
+    check the existance of a given comment
+        
+    :param name: get_list 
+    :param type: object
+    :param name: comment_id 
+    :param type: int
+    :return name: bool 
+    :return type: object
+    :return name: get_comment 
+    :return type: object
+    :return name: Response 
+    :return type: str
+    """
     bool = True #to check the existance of a given comment
     try:
        
@@ -91,6 +169,18 @@ def check_comm(get_list, comment_id):
         return get_comment, response, bool
 
 def check_user(get_list, request):
+    """
+    check user
+        
+    :param name: get_list 
+    :param type: object
+    :param name: user 
+    :param type: object
+    :return name: status 
+    :return type: str
+    :return name: Response 
+    :return type: str
+    """
     Response=''
     statuss=''
     if (get_list.owner != request.user):
@@ -102,6 +192,18 @@ def check_user(get_list, request):
     return Response, statuss
 
 def exist_photo(get_list, get_photo):
+    """
+    check whether the photo exists in the set
+            
+    :param name: get_list 
+    :param type: object
+    :param name: get_photo 
+    :param type: object
+    :return name: status 
+    :return type: str
+    :return name: Response 
+    :return type: str
+    """
     Response=''
     statuss=''
     photoos= get_list.photos.all()
@@ -113,6 +215,20 @@ def exist_photo(get_list, get_photo):
     return Response, statuss
 
 def photo_exists(get_list, photo_id):
+    """
+    Check if photo exists in a set
+        
+    :param name: get_list 
+    :param type: object
+    :param name: photo_id 
+    :param type: int
+    :param name: deleted_photo 
+    :param type: object
+    :return name: status 
+    :return type: str
+    :return name: Response 
+    :return type: str
+    """
     Response=''
     statuss=''
     try:
@@ -127,30 +243,77 @@ def photo_exists(get_list, photo_id):
         return deleted_photo ,Response, statuss
 
 
-def comm_increment(serializer, get_list, request ): # incrementing the comment count
-                                                    # when creating a new comment to a given set
+def comm_increment(serializer, get_list, request ): 
+    # incrementing the comment count
+    # when creating a new comment to a given set
+    """
+    Increment the comment count when creating a new comment to a given set
+        
+    :param name: serializer 
+    :param type: object
+    :param name: get_ist 
+    :param type: object
+    :param name: user 
+    :param type: object
+    :returns: None
+    """
     serializer.save(sets=get_list, owner=request.user)
     get_list.count_comments += 1
     get_list.save()
 
 def comm_decrement(get_list):
+    """
+    decrement comment count when creating a new comment to a given set
+        
+    :param name: get_ist 
+    :param type: object
+    :returns: None
+    """
     get_list.count_comments -= 1
     get_list.save()  
 
 def photo_increment(get_list):
+    """
+    increment photo 
+        
+    :param name: get_ist 
+    :param type: object
+    :returns: None
+    """
     get_list.count_photos += 1
     get_list.save()
 
 def photo_decrement(get_list):
+    """
+    decrement photo number
+        
+    :param name: get_ist 
+    :param type: object
+    :returns: None
+    """
     get_list.count_photos -= 1    
     get_list.save()           
 
 def sets_increment(request):
+    """
+    increment sets number 
+        
+    :param name: user 
+    :param type: object
+    :returns: None
+    """
     user=request.user
     user.photosets_count +=1
     user.save()
    
 def sets_decrement(request):
+    """
+    decrement photo number
+        
+    :param name: user 
+    :param type: object
+    :returns: None
+    """
     user=request.user
     user.photosets_count -=1
     user.save()
