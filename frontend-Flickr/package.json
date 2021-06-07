@@ -37,7 +37,7 @@
     "lint": "eslint src",
     "server": "json-server --watch db.json --port 5000",
     "testJest": "jest --watchAll",
-    "dev": "concurrently --kill-others \"json-server --watch db.json --port 5000\" \"jest --watchAll\""
+    "dev": "concurrently --kill-others \"json-server --watch db.json --port 5000\" \"react-scripts test\""
   },
   "eslintConfig": {
     "extends": [

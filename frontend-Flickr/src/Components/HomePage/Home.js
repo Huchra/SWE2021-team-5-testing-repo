@@ -11,11 +11,18 @@ import InfoColumn from './Items/InfoColumn';
 import GetPhoto from './GetPhoto';
 import OneSignalTest from '../../OneSignalTest';
 
+/**
+ * Home Page Component
+ * @returns {*}
+ */
 const Home = () => {
   document.title = 'Home | Flickr';
   const [showComp, setShowComp] = useState(true);
   const [showComp2, setShowComp2] = useState(false);
   const [showComp3, setShowComp3] = useState(false);
+  /**
+   * Get photos data from Request
+   */
   const photoData = GetPhoto();
   return (
     <div className=".container fluid-centered  OrowHomePage">

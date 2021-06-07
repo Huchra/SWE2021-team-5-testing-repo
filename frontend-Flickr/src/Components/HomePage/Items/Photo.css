@@ -80,7 +80,7 @@ h3 {
 /* Image Overlay RightContainer (engamement) */
 .overlayRightContHome {
   float: right;
-  width: 100px;
+  width: auto;
   display: flex;
   margin-left: auto;
 }

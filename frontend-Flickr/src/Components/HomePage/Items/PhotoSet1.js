@@ -6,15 +6,21 @@ import { useHistory, Link } from 'react-router-dom';
 
 import './Photo.css';
 import { MdMoreHoriz } from 'react-icons/md';
-import { AiOutlinePlusSquare, AiOutlineStar } from 'react-icons/ai';
+import { AiOutlinePlusSquare, AiOutlineStar, AiFillStar } from 'react-icons/ai';
 import { RiChat3Line } from 'react-icons/ri';
 
 import moment from 'moment';
 // import ViewPhoto from '../../ViewPhoto/ViewPhoto';
 import ViewPhotoServices from '../../ViewPhoto/ViewPhotoServices';
 
-/* eslint-disable react/prop-types */
+const accessToken = localStorage.getItem('access token');
 
+/* eslint-disable react/prop-types */
+/**
+ * PhotoSet for Layout 1
+ * @param {array} pCard
+ * @returns {*}
+ */
 const PhotoSet1 = ({ pCard }) => {
   const history = useHistory();
   // console.log(moment.utc(pCard.date_posted).local().startOf('seconds').fromNow());
@@ -23,6 +29,10 @@ const PhotoSet1 = ({ pCard }) => {
   // const imgSrc = pCard.img;
   const avatar = 'https://www.w3schools.com/w3images/avatar2.png';
   // const [viewGetPhotoData, setViewGetphotoData] = useState([]);
+  /**
+   * Handle ID of Photo to be able to View it
+   * @param {event} e
+   */
   const handleGetViewPhoto = (e) => {
     // ViewPhotoServices(pCard.id);
     // console.log(e);
@@ -31,6 +41,20 @@ const PhotoSet1 = ({ pCard }) => {
     localStorage.setItem('ImgID', pCard.id);
     // console.log(localStorage.getItem('ImgID'));
     history.push('/photo');
+  };
+
+  const faved = pCard.is_faved;
+  // const imgDown = 'pexels-eberhard-grossgasteiger-691668.jpg';
+
+  const [PhotoProps, setPhotoProps] = useState({
+    id: pCard.id,
+    Token: accessToken,
+  });
+  const handleAddFaved = async () => {
+    await ViewPhotoServices.addFav(PhotoProps);
+  };
+  const handleRemoveFaved = async () => {
+    await ViewPhotoServices.removeFav(PhotoProps);
   };
 
   return (
@@ -57,22 +81,24 @@ const PhotoSet1 = ({ pCard }) => {
             <Link className="photoNameLinkHome" to="/photos">{pCard.title}</Link>
 
           </div>
-          <div className="overlayRightContHome" />
-          <span className="overlayFave" role="button">
-            <AiOutlineStar />
-            <span>{pCard.count_favourites}</span>
+          <div className="overlayRightContHome">
+            <span className="overlayFave" role="button">
+              {faved
+                ? <AiFillStar onClick={handleRemoveFaved} />
+                : <AiOutlineStar onClick={handleAddFaved} />}
+              <span>{pCard.count_favourites}</span>
 
-          </span>
-          <span className="overlayCommentHome" role="button">
-            <RiChat3Line />
-            <span>{pCard.count_comments}</span>
+            </span>
+            <span className="overlayCommentHome" role="button">
+              <RiChat3Line />
+              <span>{pCard.count_comments}</span>
 
-          </span>
+            </span>
 
-          <span className="overlayAddToHome" role="button">
-            <AiOutlinePlusSquare />
-          </span>
-
+            <span className="overlayAddToHome" role="button">
+              <AiOutlinePlusSquare />
+            </span>
+          </div>
         </div>
       </div>
 

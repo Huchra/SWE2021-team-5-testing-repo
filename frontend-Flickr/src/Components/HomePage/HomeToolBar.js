@@ -4,7 +4,13 @@ import { BsGrid3X3GapFill, BsSquareFill } from 'react-icons/bs';
 import { RiLayoutMasonryFill } from 'react-icons/ri';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { IconContext } from 'react-icons';
-
+/**
+ *
+ * @param {boolean} showCom  - To show first Layout
+ * @param {boolean} showCom2  - To show Second Layout
+ * @param {boolean} showCom3  - To show Third Layout
+ * @returns {*} hometoolbar Component
+ */
 // eslint-disable-next-line react/prop-types
 const HomeToolBar = ({ showCom, showCom2, showCom3 }) => {
   const handleClick = (e) => {

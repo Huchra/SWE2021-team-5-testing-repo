@@ -43,18 +43,19 @@ const UpperView = ({ photoInfo }) => {
    * @param {event} e
    */
   const download = (e) => {
-    // console.log(e);
+    console.log(e);
     fetch(e.target.href, {
       method: 'GET',
       headers: { responseType: 'arraybuffer' },
     })
       .then((response) => {
+        console.log(response);
         // eslint-disable-next-line no-unused-vars
         response.arrayBuffer().then((buffer) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', 'image.png'); // or any other extension
+          link.setAttribute('download', imgUrl); // or any other extension
           document.body.appendChild(link);
           link.click();
         });
@@ -101,6 +102,7 @@ const UpperView = ({ photoInfo }) => {
         {/* <Link to={imgDown} target="_blank" download> </Link> */}
         <RiDownloadLine
           onClick={(e) => download(e)}
+          href={imgUrl}
           style={viewPhotoIcons}
         />
         Download
