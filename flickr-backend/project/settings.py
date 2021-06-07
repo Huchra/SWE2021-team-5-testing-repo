@@ -130,7 +130,7 @@ DATABASES = {
         'CLIENT': {
                     'host': "mongodb+srv://Fotone:@cluster0.khmwk.mongodb.net/flickr_database?retryWrites=true&w=majority",
                     'username': 'Fotone',
-                    'password': '1234567890'
+                    'password': config('DATABASE_PASSWORD')
                     },
     }
 }
@@ -206,4 +206,3 @@ MAX_IMAGE_SIZE = 209715200
 VALIDATE_MAIL_API_KEY=config('VALIDATE_MAIL_API_KEY')
 AUTH_NOTIFY=config('AUTH_NOTIFY')
 API_KEY=config('API_KEY')
-PLAYER_ID=config('PLAYER_ID')
