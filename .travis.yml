@@ -29,7 +29,7 @@ install:
 #Run tests on the base images, then builds further on them for production
 script:
   - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
-  - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
+#  - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
 
   - docker build -t ziyadss/flickr-frontend frontend-Flickr
   - docker build -t ziyadss/flickr-backend flickr-backend
