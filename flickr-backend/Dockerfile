@@ -8,7 +8,7 @@ WORKDIR '/app'
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-#Copies project files - unnecessary due to volume
+#Copies project files - unnecessary due to voluming
 #but kept for easy migration to different deployment
 COPY ./ ./
 

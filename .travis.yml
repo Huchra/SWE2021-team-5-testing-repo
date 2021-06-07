@@ -1,7 +1,3 @@
-branches:
-  only:
-    - main
-
 #Uncomment for OSS deployment - when repo is public
 #arch:
 #  - arm64
@@ -14,44 +10,33 @@ os:             linux
 dist:           focal
 services:       docker
 
-#Get entire repo history when cloning
-#To get commits info, for use in git-restore-mtime in deploy.sh
-git:
-  depth:        false
-
-#Emails to notify about build result
-#Default unchanged, sends on success if previous build failed, and on every fail
+#Emails repo owner to notify about build result
+#Sends on success if previous build failed, and on every fail
 notifications:
   email:
     recipients:
-      - ziyad.ss@hotmai.com
-      - khalidzohair12@gmail.com
-    on_success: always
+      - ziyad.ss@hotmail.com
+    on_success: change
     on_failure: always
 
 #Before building for production, build for testing
 #This builds base images (installing the dependencies inside them)
 #These base images will be used later to further build for production
 install:
- - docker-compose -f docker-compose.dev.yml build
+  - docker build -t ziyadss/flickr-frontend-test -f frontend-Flickr/Dockerfile.dev frontend-Flickr
+  - docker build -t ziyadss/flickr-backend-test -f flickr-backend/Dockerfile.dev flickr-backend
 
-#Run tests from docker-compose.dev, if successfull login to Docker Hub and build for production
+#Run tests on the base images, then builds further on them for production
 script:
-  - docker-compose -f docker-compose.dev.yml up
-  - echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
-  - docker-compose -f docker-compose.prod.yml build
+  - docker run -p 3000:3000 -e CI=true ziyadss/flickr-frontend-test
+  - docker run -p 8000:8000 -e CI=true ziyadss/flickr-backend-test
 
-#If tests and production build succeed, push the built images
-after_success:
-  - docker push ziyadss/flickr-frontend
-  - docker push ziyadss/flickr-backend
-
-#If tests and production build fail, do ???
-#after_failure:
+  - docker build -t ziyadss/flickr-frontend frontend-Flickr
+  - docker build -t ziyadss/flickr-backend flickr-backend
 
 #If tests and production build succeed, deploy using deploy.sh
 deploy:
   provider:     script
-  script:       bash deploy.sh $EC2_INSTANCE
+  script:       bash deploy.sh $DOCKER_ACCESS_KEY $DOCKER_ID $EC2_INSTANCE
   on:
     branch:     main

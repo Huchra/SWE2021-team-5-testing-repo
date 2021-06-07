@@ -6,7 +6,7 @@ from accounts.models import Account
 from accounts.serializers import *
 from project.utils import validate_password
 
-class TestModels(TestCase):
+class TestAccounts(TestCase):
 
 #testing sign_up         
     def test_signup_full_assignment(self):
@@ -99,6 +99,24 @@ class TestModels(TestCase):
         serializer.is_valid()
         
         self.assertEqual(serializer.errors['password'][0], 'This field is required.')
+    
+    def test_signup_invalid_email(self):
+        #preparing test data
+        test_data={}
+        first_name = 'test1'
+        last_name = 'last'
+        age = '50'
+        email = 'test@gmail.com'
+        password = 'Kamel1234567'
+
+        #Turning to dictionary
+        for variable in ["email", "first_name", "last_name","age","password"]:
+            test_data[variable] = eval(variable)
+
+        #Sending data to serializer to test serializer
+        serializer = SignUpSerializer(data = test_data)
+        serializer.is_valid()
+        self.assertEqual(serializer.errors['error'][0], 'Please enter a valid mail !')
 
     def test_signup_email_already_exist(self):
         #prepare already exist user
@@ -125,6 +143,25 @@ class TestModels(TestCase):
         serializer.is_valid()
         
         self.assertEqual(serializer.errors['email'][0], 'account with this email already exists.')
+        
+    def test_invalid_mail_fail(self):
+        #preparing test data
+        test_mail= 'test@gmail.com'
+        result = validate_user_mail(test_mail)
+        self.assertEqual(result, 'invalid')
+    
+    def test_wrong_format_mail_fail(self):
+        #preparing test data
+        test_mail= 'testgmail.com'
+        result = validate_user_mail(test_mail)
+        self.assertEqual(result, 'invalid')
+        
+    def test_invalid_mail_success(self):
+        #preparing test data
+        test_mail= 'mohammed99kamel@gmail.com'
+        result = validate_user_mail(test_mail)
+        self.assertEqual(result, 'valid')
+        
     def test_signup_entering_short_password(self):
         #preparing test data
         test_data={}
@@ -188,7 +225,7 @@ class TestModels(TestCase):
         result,error = validate_password(password)
         self.assertEqual(error, 'password must contain at least one lowercase character')
     
-    def test_signup_validating_password_lowercase(self):
+    def test_signup_validating_password_number(self):
         #test password
         password = 'Kamelalimohammed'
         
@@ -301,13 +338,13 @@ class TestModels(TestCase):
         last_name = 'name'
         age = '50'
         password = 'Kamel1234567'
-        email = 'test@gmail.com'
+        email = 'mohammed99kamel@gmail.com'
         Account.objects.create_user(email,first_name,last_name,age,password)
         user=Account.objects.get(email = email)
 
         #login
         test_data={}
-        email = 'test@gmail.com'
+        email = 'mohammed99kamel@gmail.com'
         password = 'Kamel1234567'
         
         #Turning to dictionary
@@ -599,11 +636,197 @@ class TestModels(TestCase):
         serializer.is_valid()
         response = change_user_name(serializer,user)
         self.assertEqual(response['Success'], 'Username changed')
+
+#change user first/last name
+    def test_change_first_last_name_success(self):
+        #prepare user
+        first_name = 'test2'
+        last_name = 'name'
+        age = '50'
+        password = 'Kamel1234567'
+        email = 'mohammed99kamel@gmail.com'
+        Account.objects.create_user(email,first_name,last_name,age,password)
+        user=Account.objects.get(email = email)
+        test_data={}
+        #new data
+        first_name = 'test4'
+        last_name = 'name2'
         
+        #Turning to dictionary
+        for variable in ["first_name",'last_name']:
+            test_data[variable] = eval(variable)
+            
+        #verify user
+        verifying_user(user)
+        #Sending data to serializer to test serializer
+        serializer = ChangeFirstLastNameSerializer(data = test_data)
+        serializer.is_valid()
+        response = change_first_last_name(serializer,user)
+        
+        self.assertEqual(response['Success'], 'First & Last name changed')
+        self.assertEqual(user.first_name, 'test4')
+        self.assertEqual(user.last_name, 'name2')
+        
+        
+    def test_change_last_name_failure(self):
+        #prepare user
+        first_name = 'test2'
+        last_name = 'name'
+        age = '50'
+        password = 'Kamel1234567'
+        email = 'mohammed99kamel@gmail.com'
+        Account.objects.create_user(email,first_name,last_name,age,password)
+        user=Account.objects.get(email = email)
+        test_data={}
+        #new data
+        first_name = 'test4'
+        
+        #Turning to dictionary
+        for variable in ["first_name"]:
+            test_data[variable] = eval(variable)
+            
+        #verify user
+        verifying_user(user)
+
+        #Sending data to serializer to test serializer
+        serializer = ChangeFirstLastNameSerializer(data = test_data)
+        serializer.is_valid()
+        # response = change_first_last_name(serializer,user)
+        
+        self.assertEqual(serializer.errors['last_name'][0], 'This field is required.')
+        
+    def test_change_first_failure(self):
+        #prepare user
+        first_name = 'test2'
+        last_name = 'name'
+        age = '50'
+        password = 'Kamel1234567'
+        email = 'mohammed99kamel@gmail.com'
+        Account.objects.create_user(email,first_name,last_name,age,password)
+        user=Account.objects.get(email = email)
+        test_data={}
+        #new data
+        last_name = 'test4'
+        
+        #Turning to dictionary
+        for variable in ["last_name"]:
+            test_data[variable] = eval(variable)
+            
+        #verify user
+        verifying_user(user)
+
+        #Sending data to serializer to test serializer
+        serializer = ChangeFirstLastNameSerializer(data = test_data)
+        serializer.is_valid()
+        
+        self.assertEqual(serializer.errors['first_name'][0], 'This field is required.')
+
+#change user email
+
+    def test_change_email_success(self):
+        #prepare user
+        first_name = 'test2'
+        last_name = 'name'
+        age = '50'
+        password = 'Kamel1234567'
+        email = 'mohammed99kamel@gmail.com'
+        Account.objects.create_user(email,first_name,last_name,age,password)
+        user=Account.objects.get(email = email)
+        test_data={}
+        
+        #new data
+        new_email = 'mohammed99kamel@yahoo.com'
+  
+
+        _,_ = change_user_email(new_email,user)
+        
+        self.assertEqual(user.email, new_email)
+        
+    def test_change_email_fail(self):
+        #prepare user
+        first_name = 'test2'
+        last_name = 'name'
+        age = '50'
+        password = 'Kamel1234567'
+        email = 'mohammed99kamel@gmail.com'
+        Account.objects.create_user(email,first_name,last_name,age,password)
+        user=Account.objects.get(email = email)
+        
+        #new data
+        new_email = 'mohammed99kamel'
+  
+
+        response,_ = change_user_email(new_email,user)
+        
+        self.assertEqual(response['error'], 'Please enter a valid mail')
+def create_test_user(email):
+    #prepare user
+    first_name = 'test2'
+    last_name = 'name'
+    age = '50'
+    password = 'Kamel1234567'
+    email = email
+    Account.objects.create_user(email,first_name,last_name,age,password)
+    user=Account.objects.get(email = email)
+    verifying_user(user)
+    return user 
+
+class TestContacts(TestCase):
     
+    def test_follow_success(self):
+        user=create_test_user('user@gmail.com')
+        #second user
+        followed_user= create_test_user('second@gmail.com')
+        
+        contact = Contacts.objects.filter(
+            user=user, followed=followed_user)
+        response= follow(contact,followed_user,user)
+        contact = Contacts.objects.filter(
+            user=user, followed=followed_user)
+        self.assertEqual(contact.exists(), True)            
+        self.assertEqual(response, 200)
+        self.assertEqual(user.following_count,1)
+        self.assertEqual(followed_user.followers_count,1)
 
+    def test_follow_failure(self):
+        user=create_test_user('user@gmail.com')
+        contact = Contacts.objects.filter(
+            user=user, followed=user)
+        response= follow(contact,user,user)
 
+        contact = Contacts.objects.filter(
+            user=user, followed=user)
+        self.assertEqual(contact.exists(), False)     
+        self.assertEqual(response, 400)
+        self.assertEqual(user.following_count,0)
+        self.assertEqual(user.followers_count,0)
 
+    def test_unfollow_success(self):
+        user=create_test_user('user22@gmail.com')
+        #second user
+        followed_user= create_test_user('second22@gmail.com')
+        
+        contact1 = Contacts.objects.filter(
+            user=user, followed=followed_user)
+        follow(contact1,followed_user,user)
+        contact2 = Contacts.objects.filter(
+            user=user, followed=followed_user)    
+        response= unfollow(contact2,user,followed_user)
+        contact = Contacts.objects.filter(
+            user=user, followed=followed_user)
+        self.assertEqual(contact.exists(), False)            
+        self.assertEqual(response, 204)
+        self.assertEqual(user.following_count,0)
+        self.assertEqual(followed_user.followers_count,0)
+
+    def test_unfollow_failure(self):
+        user=create_test_user('user45@gmail.com')
+        contact = Contacts.objects.filter(
+            user=user, followed=user)
+        response= unfollow(contact,user,user)   
+        self.assertEqual(response, 400)
+
+        
 
 
 
