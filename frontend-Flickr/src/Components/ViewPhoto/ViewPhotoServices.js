@@ -3,7 +3,11 @@ import Conf from '../../Conf';
 
 const ViewPhotoServices = {
 
-  // Get Photo
+  /**
+   * to fetch photo inf0
+   * @param {string} props
+   * @returns {array}  photo data
+   */
   getPhotoInfo: async (props) => {
     let go = false;
     let response = [];
@@ -29,7 +33,10 @@ const ViewPhotoServices = {
     return response;
   },
 
-  // Add Fav
+  /**
+   * To add a Fave
+   * @param {string} props pass ID and Token
+   */
   addFav: async (props) => {
     let go = false;
     const { id, Token } = props;
@@ -50,7 +57,10 @@ const ViewPhotoServices = {
         go = true;
       });
   },
-  // Remove Fav
+  /**
+   * remove fave
+   * @param {string} props pass ID and Token
+   */
   removeFav: async (props) => {
     let go = false;
     const { id, Token } = props;

@@ -1,7 +1,10 @@
 import { ImStatsDots } from 'react-icons/im';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import { Container, Row, Col } from 'react-bootstrap';
-
+/**
+ * Indo Column Component
+ * @returns {*}
+ */
 const InfoColumn = () => (
   <div className="col-lg-4  infoColumn">
     <div className="railItem viewStats">

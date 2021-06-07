@@ -3,7 +3,10 @@ import axios from 'axios';
 import Conf from '../../Conf';
 
 const accessToken = localStorage.getItem('access token');
-
+/**
+ * Returns Photos from request
+ * @returns {array} of Photos
+ */
 const GetPhoto = () => {
   const [photoData, setphotoData] = useState([]);
 
