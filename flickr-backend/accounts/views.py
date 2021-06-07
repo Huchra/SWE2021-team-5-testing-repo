@@ -39,11 +39,27 @@ from rest_framework.decorators import parser_classes
 
 #Functionality
 def verifying_user(user):
+    """
+    Verify user
+    
+    :param name: user : Logged in user
+    :param type: user
+    :return: None
+    """
     if not user.is_verified:
         user.is_verified = True
         user.save()
 
 def increment_profile_items(obj,field):
+    """
+    Increment profile items
+    
+    :param name: obj 
+    :param type: object
+    :param name: field :gallery/followwrs/total_media items
+    :param type: str
+    :return: None
+    """
     if field=='galleries_count':
         obj.galleries_count += 1
     elif field=='following_count':
@@ -55,6 +71,15 @@ def increment_profile_items(obj,field):
     obj.save()  
 
 def decrement_profile_items(obj,field):
+    """
+    Decrement profile items
+    
+    :param name: obj 
+    :param type: object
+    :param name: field :gallery/followwrs/total_media items
+    :param type: str
+    :return: None
+    """
     if field=='galleries_count':
         obj.galleries_count -= 1
     elif field=='following_count':
@@ -66,6 +91,17 @@ def decrement_profile_items(obj,field):
     obj.save()  
 
 def follow(contact,followed_user_obj,user):
+    """
+    follow a user
+    
+    :param name: contact 
+    :param type: object
+    :param name: followed_user_obj :user who got follow
+    :param type: object
+    :param name: user : user performing followed
+    :param type: object
+    :return: Response
+    """
     # check if it the request user or someone i followed  before
     if contact or followed_user_obj == user:
         return status.HTTP_400_BAD_REQUEST
@@ -90,6 +126,17 @@ def follow(contact,followed_user_obj,user):
 
 def unfollow(contact,user,followed_user_obj):
     # can't unfoolow someone not in my contacts
+    """
+    unfollow a user
+    
+    :param name: contact 
+    :param type: object
+    :param name: followed_user_obj :user who got unfollowed
+    :param type: object
+    :param name: user : user performing unfollow 
+    :param type: object
+    :return: Response
+    """
     if not contact:
         return status.HTTP_400_BAD_REQUEST
     
@@ -101,6 +148,18 @@ def unfollow(contact,user,followed_user_obj):
     return status.HTTP_204_NO_CONTENT     
 
 def check_media_content_type(serializer,file_field):
+    """
+    check media contenttype
+    
+    :param name: serializer 
+    :param type: object
+    :param name: file_field : file field
+    :param type: object
+    :return name: Error
+    :return type: str
+    :return name: status
+    :return type: str
+    """
     if serializer.is_valid():
         # get the type of the file from the extension
         try:
@@ -117,6 +176,18 @@ def check_media_content_type(serializer,file_field):
         return  serializer.errors, status.HTTP_400_BAD_REQUEST
 
 def prepare_verify_email(current_site,user,token):
+    """
+    Prepare verify email
+    
+    :param name: current_site 
+    :param type: str
+    :param name: user 
+    :param type: object
+    :param name: token 
+    :param type: int
+    :return name: data
+    :return type: str
+    """
     relative_link = reverse('accounts:email-verify')
     absurl = 'http://'+current_site+relative_link+"?token="+str(token)
     email_body = 'Hi ' + user.username + ' Use link to verify \n' + absurl
@@ -126,6 +197,20 @@ def prepare_verify_email(current_site,user,token):
     return data
 
 def prepare_reset_password_email(current_site,user,token,uidb64):
+    """
+    Prepare reset email
+    
+    :param name: current_site 
+    :param type: str
+    :param name: user 
+    :param type: object
+    :param name: token 
+    :param type: int
+    :param name: uidb64 
+    :param type: str
+    :return name: data
+    :return type: str
+    """
     relative_link = reverse('accounts:password-reset-confirm',
                             kwargs={'uidb64': uidb64, 'token': token})
     absurl = 'http://'+current_site+relative_link
@@ -135,6 +220,16 @@ def prepare_reset_password_email(current_site,user,token,uidb64):
     return data
 
 def check_account_exist_email(email):
+    """
+    check if account with mail exist
+    
+    :param name: email 
+    :param type: str
+    :return name: bool
+    :return type: bool
+    :return name: error
+    :return type: str
+    """
     bool = Account.objects.filter(email=email).exists()
     if bool:
         error=''
@@ -143,20 +238,60 @@ def check_account_exist_email(email):
     return bool,error
 
 def change_to_pro(user):
+    """
+    change to pro
+
+    :param name: user 
+    :param type: object
+    :returns: None
+    """
     user.is_pro =True
     user.save()
 
 def change_to_normal(user):
+    """
+    change to normal
+
+    :param name: user 
+    :param type: object
+    :returns: None
+    """
     user.is_pro =False
     user.save()
     
 def check_pro(user):
+    """
+    check pro
+
+    :param name: user 
+    :param type: object
+    :returns: bool
+    """
     return user.is_pro
 
 def delete_user(user):
+    """
+    delete user
+
+    :param name: user : user to be deleted
+    :param type: object
+    :returns: None
+    """
     user.delete()
 
 def change_user_password(serializer,user):
+        """
+        change user password
+        
+        :param name: serializer 
+        :param type: object
+        :param name: user
+        :param type: object
+        :return name: Response
+        :return type: str
+        :return name: status
+        :return type: str
+        """
     # Check the old password
         if not user.check_password(serializer.data.get('old_password')):
             response = {"old_password": ["Wrong password."]}
@@ -181,6 +316,16 @@ def change_user_password(serializer,user):
         return response,statuss
 
 def change_user_name(serializer,user):
+    """
+    check username
+    
+    :param name: serializer 
+    :param type: object
+    :param name: user
+    :param type: object
+    :return name: response
+    :return type: str
+    """
     username,error = validate_username(serializer.data['username'].lower())
     if len(username)==0:
         raise serializers.ValidationError(error)
@@ -190,6 +335,18 @@ def change_user_name(serializer,user):
     return response
 
 def change_user_email(useremail,user):
+        """
+        check user email
+        
+        :param name: usermail 
+        :param type: str
+        :param name: user
+        :param type: object
+        :return name: response
+        :return type: str
+        :return name: status
+        :return type: str
+        """    
         if useremail == user.email:
             response = {'stat': 'New mail cannot be equal to old mail !!'}
             statuss=status.HTTP_400_BAD_REQUEST
@@ -211,6 +368,16 @@ def change_user_email(useremail,user):
         return response, statuss
     
 def change_first_last_name(serializer,user):
+    """
+    change user first/last name
+    
+    :param name: serializer 
+    :param type: object
+    :param name: user
+    :param type: object
+    :return name: Response
+    :return type: str
+    """
     new_first = serializer.data['first_name']
     new_last = serializer.data['last_name']
     
@@ -222,6 +389,16 @@ def change_first_last_name(serializer,user):
     return response
 
 def limit_people_number(people, max_limit):
+    """
+    limit people number
+            
+    :param name: people 
+    :param type: object
+    :param name: max limit
+    :param type: int
+    :return name: People
+    :return type: object
+    """
 
     required_people_ids_list = []
     count = 1
