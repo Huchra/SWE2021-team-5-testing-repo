@@ -31,13 +31,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test a",
     "eject": "react-scripts eject",
     "doc": "jsdoc -c jsdoc.json",
     "lint": "eslint src",
     "server": "json-server --watch db.json --port 5000",
     "testJest": "jest --watchAll",
-    "dev": "concurrently -s first --kill-others \"json-server --watch db.json --port 5000\" \" react-scripts test\""
+    "dev": "concurrently -s first --kill-others \"json-server --watch db.json --port 5000\" \" react-scripts test a\""
   },
   "eslintConfig": {
     "extends": [
