@@ -36,10 +36,10 @@
     "doc": "jsdoc -c jsdoc.json",
     "lint": "eslint src",
     "server": "json-server --watch db.json --port 5000",
-    "testJest": "jest --watchAll",
+    "testJest": "jest --watchAll ",
     "dev": "concurrently -s first --kill-others \"json-server --watch db.json --port 5000\" \" react-scripts test a\""
   },
-  "eslintConfig": {
+  "eslimntConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
