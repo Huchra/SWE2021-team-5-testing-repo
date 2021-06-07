@@ -1,6 +1,7 @@
 {
     "email":"mohamedsameh408@gmail.com",
     "password":"Testingsw111",
+    "wrongEmail":"mohamedsameh40@gmail.com",
     "notEmail":"mohamedsameh@gmail",
     "notPassword":"testing11"
 }
