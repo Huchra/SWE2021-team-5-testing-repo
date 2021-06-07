@@ -50,7 +50,7 @@ describe('test Log In', function()
   {
     login.forgetPasswordButton().click()
     cy.contains('Change your Flickr password',{timeout: 10000}).should('be.visible')
-    cy.url().should('include','')
+    cy.url().should('include','/forgot-password')
     //invalid email
     login.forgetPasswordEmail().type(userDetails.notEmail)
     login.sendEmailButton().click()
