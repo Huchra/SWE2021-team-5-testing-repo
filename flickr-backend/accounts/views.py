@@ -74,16 +74,18 @@ def follow(contact,followed_user_obj,user):
     # and the count of followers for the given user by 1
     increment_profile_items(user,'following_count')
     increment_profile_items(followed_user_obj,'followers_count')
-        # push notification
-    header = {"Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
+    device = PlayerIds.objects.filter(user=user)
+    for i in device:
 
-    payload = {"app_id": str(settings.API_KEY),
-                "include_player_ids": [str(settings.PLAYER_ID)],
-                "contents": {"en": str(user.first_name + " " + user.last_name + " is now following you!")}}
+        header = {"Content-Type": "application/json; charset=utf-8",
+                    "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
 
-    req = requests.post("https://app.onesignal.com/api/v1/notifications",
-                            headers=header, data=json.dumps(payload))
+        payload = {"app_id": str(settings.API_KEY),
+                    "include_player_ids": [str(i.player_id)],
+                    "contents": {"en": str(user.first_name + " " + user.last_name + " is now following you!")}}
+
+        req = requests.post("https://app.onesignal.com/api/v1/notifications",
+                                headers=header, data=json.dumps(payload))
     return status.HTTP_200_OK
 
 def unfollow(contact,user,followed_user_obj):
@@ -798,3 +800,43 @@ def search_email(request):
     result_page = paginator.paginate_queryset(required_people, request)
     all_people = OwnerSerializer(result_page, many=True).data
     return paginator.get_paginated_response({'following': following, 'all_people': all_people})
+
+@swagger_auto_schema( methods = ['post'] , request_body = PlayerIdSerializer )
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def player_ids(request):
+    try:
+        user=request.user
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'POST':
+        serializer = PlayerIdSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@swagger_auto_schema( methods = ['Delete'] , request_body = PlayerIdSerializer )
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
+def player_ids_remove(request):
+    try:
+        user=request.user
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        value = request.data["player_id"]
+        try:
+            player = PlayerIds.objects.all().filter(player_id=value, user=user)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        operation = player.delete()
+        data = {}
+        if operation:
+            data["stat"] = "ok"
+        else:
+            data["stat"] = "fail"
+        return Response(data=data)

@@ -674,18 +674,19 @@ def create_reply(request, group_id, topic_id):
         group_topic.count_replies += 1
         group_topic.save()
 
-        # # push notification
-        # if group_topic.notification:
-        header = {"Content-Type": "application/json; charset=utf-8",
-                        "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
+        # push notification
+        if group_topic.notification:
+            device = PlayerIds.objects.filter(user=request.user)
+            for i in device:
+                header = {"Content-Type": "application/json; charset=utf-8",
+                                "Authorization": "Basic "+ str(settings.AUTH_NOTIFY)}
 
-        payload = {"app_id": str(settings.API_KEY),
-                    "include_player_ids": [str(settings.PLAYER_ID)],
-                   "contents": {"en": str(request.user.first_name + " " + request.user.last_name + " replied to the discussion " + group_topic.subject + " in the group " + group_detail.name)}}
+                payload = {"app_id": str(settings.API_KEY),
+                            "include_player_ids": [str(i.player_id)],
+                        "contents": {"en": str(request.user.first_name + " " + request.user.last_name + " replied to the discussion " + group_topic.subject + " in the group " + group_detail.name)}}
 
-        req = requests.post("https://app.onesignal.com/api/v1/notifications",
-                            headers=header, data=json.dumps(payload))
-
+                req = requests.post("https://app.onesignal.com/api/v1/notifications",
+                                    headers=header, data=json.dumps(payload))
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

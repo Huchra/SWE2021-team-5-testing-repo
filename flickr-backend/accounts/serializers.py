@@ -241,3 +241,8 @@ class FollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacts
         fields = ['user']   
+
+class PlayerIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlayerIds
+        fields = ['player_id']

@@ -137,3 +137,9 @@ class Contacts(models.Model):
 # follow a user
 post_save.connect(Contacts.user_follow, sender=Contacts)
 post_delete.connect(Contacts.user_unfollow, sender=Contacts)
+
+
+class PlayerIds(models.Model):
+    user = models.ForeignKey(Account, related_name='account_player_id',
+                             on_delete=models.CASCADE)
+    player_id = models.CharField(max_length=50)

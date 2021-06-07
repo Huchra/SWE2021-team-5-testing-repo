@@ -79,4 +79,10 @@ path('search/', search, name='search'),
 # search by email
 path('search/email/', search_email, name='search_email'),
 
+# add player id
+path('player/', player_ids, name='player_ids'),
+
+# remove player id
+path('player/remove', player_ids_remove, name='player_ids_remove'),
+
 ]
