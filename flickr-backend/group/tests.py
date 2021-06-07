@@ -438,37 +438,3 @@ class ReplySerializerTests(TestCase):
         deleted_obj = reply.objects.filter(message=message)
         self.assertEqual(deleted_obj.exists(), False)
 
-
-class MemberTestSerializer(TestCase):
-    def test_change_member(self):
-        user_obj = create_test_user("email")
-        name = 'group test'
-        privacy = 1
-        group_obj = group.objects.create(name=name, privacy=privacy)
-        member_type = 1
-        Members.objects.create(group=group_obj, member=user_obj,
-                               member_type=member_type)
-        member_obj = Members.objects.get(group=group_obj, member=user_obj)
-        data = {}
-        member_type = 2
-        for variable in ["member_type"]:
-            data[variable] = eval(variable)
-        changed_serializer = GroupMemberSerializer(member_obj, data=data)
-        changed_serializer.is_valid()
-        changed_serializer.save()
-
-        obj = Members.objects.get(group=group_obj, member=user_obj)
-        self.assertEqual(obj.member_type, 2)
-
-    def test_delete_member(self):
-        user_obj = create_test_user("email")
-        name = 'group test'
-        privacy = 1
-        group_obj = group.objects.create(name=name, privacy=privacy)
-        member_type = 1
-        Members.objects.create(group=group_obj, member=user_obj,
-                               member_type=member_type)
-        member_obj = Members.objects.get(group=group_obj, member=user_obj)
-        member_obj.delete()
-        deleted_obj = Members.objects.filter(group=group_obj, member=user_obj)
-        self.assertEqual(deleted_obj.exists(), False)

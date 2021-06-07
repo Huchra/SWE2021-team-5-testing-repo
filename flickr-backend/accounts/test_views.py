@@ -806,9 +806,8 @@ class TestContacts(TestCase):
         #second user
         followed_user= create_test_user('second22@gmail.com')
         
-        contact1 = Contacts.objects.filter(
+        Contacts.objects.create(
             user=user, followed=followed_user)
-        follow(contact1,followed_user,user)
         contact2 = Contacts.objects.filter(
             user=user, followed=followed_user)    
         response= unfollow(contact2,user,followed_user)
