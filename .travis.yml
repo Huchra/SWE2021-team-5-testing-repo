@@ -10,12 +10,13 @@ os:             linux
 dist:           focal
 services:       docker
 
-#Emails repo owner to notify about build result
+#Emails to notify about build result
 #Sends on success if previous build failed, and on every fail
 notifications:
   email:
     recipients:
       - ziyad.ss@hotmail.com
+      - narutosasuke600.ns@gmail.com
     on_success: change
     on_failure: always
 
